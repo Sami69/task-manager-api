@@ -17,11 +17,9 @@ router.post('/users', async (req, res) => {
         await user.save()
         sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
-        res.status(201).send( { user, token } )
-        console.log('Successfuly creating new user', user)
-    } catch (err) {
-        res.status(400).send(err)
-        console.log('Fail to update database', err)
+        res.status(201).send({ user, token })
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
@@ -30,18 +28,16 @@ router.post('/users', async (req, res) => {
  */
 router.post('/users/login', async (req, res) => {
     try {
-        
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send( { user, token } )
-    } catch (err) {
-        res.status(400).send(err)
-        console.log('Fail to update database', err)
+        res.send({ user, token })
+    } catch (e) {
+        res.status(400).send()
     }
 })
 
 /**
- * Logout user with valida token
+ * Logout user with valid token
  */
 router.post('/users/logout', auth, async (req, res) => {
     try {
@@ -51,9 +47,8 @@ router.post('/users/logout', auth, async (req, res) => {
         await req.user.save()
 
         res.send()
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('Error logout user', err)
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
@@ -65,9 +60,8 @@ router.post('/users/logoutAll', auth, async (req, res) => {
         req.user.tokens = []
         await req.user.save()
         res.send()
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('Error logout all available sessions', err)
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
@@ -94,9 +88,8 @@ router.patch('/users/me', auth, async (req, res) => {
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()
         res.send(req.user)
-    } catch (err) {
-        res.status(400).send(err)
-        console.log('Fail to update user', err)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
@@ -109,9 +102,8 @@ router.delete('/users/me', auth, async(req, res) => {
         sendCancelationEmail(req.user.email, req.user.name)
         await req.user.remove()
         res.send(req.user)
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('User not found', err)
+    } catch (e) {
+        res.status(500).send()
     }
 
 })
@@ -121,8 +113,12 @@ const upload = multer({
         fileSize: 1000000
     },
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(gif|jpg|jpeg|png)$/)) {
-            return cb(new Error('Please upload an image of type jpg, jpeg or png.'))
+        // if (!file.originalname.match(/\.(gif|jpg|jpeg|png)$/)) {
+        //     return cb(new Error('Please upload an image of type jpg, jpeg or png.'))
+        // }
+
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload an image'))
         }
 
         cb(undefined, true)
@@ -164,10 +160,8 @@ router.get('/users/:id/avatar', async (req, res) => {
 
         res.set('Content-Type', 'image/png')
         res.send(avatar)
-
-    } catch (err) {
-        console.log('Error fetching avatar image!')
-        res.status(400).send()
+    } catch (e) {
+        res.status(404).send()
     }
 })
 

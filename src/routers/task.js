@@ -17,10 +17,8 @@ router.post('/tasks', auth, async (req, res) => {
     try {
         await task.save()
         res.status(201).send(task)
-        console.log('Successfuly creating new task', task)
-    } catch (err) {
-        res.status(400).send(err)
-        console.log('Fail to update database', err)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
@@ -47,7 +45,7 @@ router.get('/tasks', auth, async (req, res) => {
     const match = {}
     const sort = {}
 
-    if(req.query.completed) {
+    if (req.query.completed) {
         match.completed = req.query.completed === 'true'
     }
 
@@ -67,9 +65,8 @@ router.get('/tasks', auth, async (req, res) => {
             }
         }).execPopulate()
         res.send(req.user.tasks)
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('Fail to read database', err)
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
@@ -80,18 +77,15 @@ router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     try {
-        const task = await Task.findOne({_id, owner: req.user._id})
+        const task = await Task.findOne({ _id, owner: req.user._id })
 
         if (!task) {
-            console.log('Fail to read user id ' + _id)
             return res.status(404).send()
         }
 
-        console.log('Successfuly reading task ' + ((task.description)? '\"' + task.description + '\"': '!'))
         res.send(task)
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('Fail to read task id', err)
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
@@ -108,44 +102,35 @@ router.patch('/tasks/:id', auth, async (req, res) => {
     }
 
     try {
-        const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
+        const task = await Task.findOne({ _id: req.params.id, owner: req.user._id})
 
         if (!task) {
-            console.log('Fail to update user!')
             return res.status(404).send()
-        } 
-        
+        }
+
         updates.forEach((update) => task[update] = req.body[update])
         await task.save()
         res.send(task)
-
-        console.log('Successfuly update task ' + ((task.description) ? '\"' + task.description + '\"': '!'))
-    } catch (err) {
-        res.status(400).send(err)
-        console.log('Fail to updating user', err)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
 /**
  * Delete one user by Id
  */
-router.delete('/tasks/:id', auth, async(req, res) => {
-
+router.delete('/tasks/:id', auth, async (req, res) => {
     try {
-        const task = await Task.findOneAndDelete({_id: req.params.id, owner: req.user._id})
+        const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
 
         if (!task) {
-            console.log('Task not found!')
             res.status(404).send()
-        } 
+        }
 
-        console.log('Successfuly deleting task ' + ((task.description) ? '\"' + task.description + '\"': '!'))
         res.send(task)
-    } catch (err) {
-        res.status(500).send(err)
-        console.log('Task not found', err)
+    } catch (e) {
+        res.status(500).send()
     }
-
 })
 
 module.exports = router

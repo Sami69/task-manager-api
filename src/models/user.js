@@ -61,7 +61,7 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 })
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
 
@@ -101,7 +101,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 /**
  * Hash plain text password before saving
  */
-userSchema.pre('save', async function(next){
+userSchema.pre('save', async function (next) {
     const user = this
 
     if (user.isModified('password')) {

@@ -13,9 +13,8 @@ const auth = async (req, res, next) => {
 
         req.token = token
         req.user = user
-        console.log(user)
         next()
-    } catch(err) {
+    } catch (e) {
         res.status(401).send({ error: 'Please authenticate with a valid user email and password!'})
     }
 }
