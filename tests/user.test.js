@@ -12,7 +12,7 @@ test('Should signup a new user', async () => {
         password: 'Am52Vd91'
     }).expect(201)
 
-    // Assert the database wasa changed correctly
+    // Assert the database was changed correctly
     const user = await User.findById(response.body.user._id)
     expect(user).not.toBeNull()
 
@@ -73,7 +73,7 @@ test('Should delete account for user', async() => {
     expect(user).toBeNull()
 })
 
-test('Should not delete account for unauthenticated user', async() => {
+test('Should not delete account for unauthenticate user', async () => {
     await request(app)
         .delete('/users/me')
         .send()
@@ -91,7 +91,7 @@ test('Should upload avatar image', async() => {
 
 })
 
-test('Should update valid uer fields', async() => {
+test('Should update valid user fields', async () => {
     await request(app)
         .patch('/users/me')
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
@@ -99,12 +99,11 @@ test('Should update valid uer fields', async() => {
             name: 'Tristan'
         })
         .expect(200)
-
     const user = await User.findById(userOneId)
     expect(user.name).toEqual('Tristan')
 })
 
-test('Should not update invalid uer fields', async() => {
+test('Should not update invalid user fields', async () => {
     await request(app)
         .patch('/users/me')
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
