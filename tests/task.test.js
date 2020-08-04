@@ -45,5 +45,3 @@ test('Should not delete other users tasks', async () => {
     const task = await Task.findById(taskOne._id)
     expect(task).not.toBeNull()
 })
-
-// see links.mead.io/extratests 

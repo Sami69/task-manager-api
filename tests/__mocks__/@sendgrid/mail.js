@@ -1,8 +1,8 @@
 module.exports = {
-    setApiKey() {
-
-    },
-    send() {
-        
-    }
-}
+	setApiKey(key) {
+		//console.log('key', key);
+	},
+	send(mail) {
+		//console.log('mail', mail);
+	}
+};

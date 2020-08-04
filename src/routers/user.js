@@ -122,7 +122,7 @@ const upload = multer({
  * Upload image into the database in base64 format
  */
 router.post(
-	'/user/me/avatar',
+	'/users/me/avatar',
 	auth,
 	upload.single('avatar'),
 	async (req, res) => {
